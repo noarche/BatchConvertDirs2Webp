@@ -44,9 +44,6 @@ def process_directory(directory, scale_percent):
     processed_files = 0
     ignored_files = 0
 
-    to_delete = []
-    to_rename = []
-
     for root, dirs, files in os.walk(directory):
         image_files = [f for f in files if f.lower().endswith(('.jpeg', '.jpg', '.png', '.webp'))]
 
@@ -61,26 +58,10 @@ def process_directory(directory, scale_percent):
                 orig_path, resized_path = resize_image(img_path, scale_percent)
                 if orig_path and resized_path:
                     processed_files += 1
-                    to_delete.append(orig_path)
-                    to_rename.append((resized_path, orig_path))
                 else:
                     ignored_files += 1
 
                 pbar.update(1)
-
-    print(f"{Fore.YELLOW}Deleting original files...")
-    for file_path in to_delete:
-        try:
-            os.remove(file_path)
-        except Exception as e:
-            print(f"{Fore.RED}Error deleting {file_path}: {e}")
-
-    print(f"{Fore.YELLOW}Renaming resized files back to the original names...")
-    for old_path, new_path in to_rename:
-        try:
-            os.rename(old_path, new_path)
-        except Exception as e:
-            print(f"{Fore.RED}Error renaming {old_path} to {new_path}: {e}")
 
     print(f"{Fore.GREEN}Image resizing complete!")
     print(f"{Fore.CYAN}Total detected: {total_files}")
@@ -89,7 +70,7 @@ def process_directory(directory, scale_percent):
 
 def display_help():
     print(f"{Fore.MAGENTA}This script resizes images by a percentage.")
-    print(f"It processes all subdirectories in the provided directory, resizes images, and renames files.")
+    print(f"It processes all subdirectories in the provided directory, resizes images, and saves them with '_resized' appended to the filename.")
     print(f"Type 'exit' or 'e' to quit the program.")
 
 def main():
@@ -121,3 +102,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
